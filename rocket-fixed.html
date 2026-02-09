@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rocket (Fixed)</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      background: radial-gradient(circle at bottom, #0b1026, #02030a);
+      overflow: hidden;
+    }
+    .stars {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(2px 2px at 5% 20%, white 50%, transparent 51%),
+        radial-gradient(1px 1px at 15% 80%, white 50%, transparent 51%),
+        radial-gradient(2px 2px at 25% 30%, white 50%, transparent 51%),
+        radial-gradient(1px 1px at 35% 60%, white 50%, transparent 51%),
+        radial-gradient(2px 2px at 45% 10%, white 50%, transparent 51%),
+        radial-gradient(1px 1px at 55% 90%, white 50%, transparent 51%),
+        radial-gradient(2px 2px at 65% 40%, white 50%, transparent 51%),
+        radial-gradient(1px 1px at 75% 70%, white 50%, transparent 51%),
+        radial-gradient(2px 2px at 85% 20%, white 50%, transparent 51%);
+      animation: twinkle 4s infinite alternate;
+      z-index: -1;
+    }
+    @keyframes twinkle { from {opacity:.4} to {opacity:1} }
+
+    #rocketAnim {
+      position: absolute;
+      bottom: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 220px;
+      pointer-events: none;
+    }
+    .launch {
+      animation: fly 2s ease-in-out forwards;
+    }
+    @keyframes fly {
+      from { bottom: -200px; }
+      to { bottom: 120%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div id="rocketAnim"></div>
+
+  <!-- Official Lottie Web Library -->
+  <script src="./lottie.min.js"></script>
+  <script>
+    // Load the animation
+    const anim = lottie.loadAnimation({
+      container: document.getElementById('rocketAnim'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: './rocket.json'  // your local JSON
+    });
+
+    // Launch on load
+    window.addEventListener('load', () => {
+      document.getElementById('rocketAnim').classList.add('launch');
+    });
+  </script>
+</body>
+</html>

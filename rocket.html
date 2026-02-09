@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Speso Starship Launch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { --glow: 0 0 20px rgba(180,200,255,.35), 0 0 50px rgba(120,160,255,.25); }
+
+  body{
+    margin:0; height:100vh; overflow:hidden;
+    background: radial-gradient(circle at bottom, #0b1026, #02030a);
+    display:grid; place-items:center; color:#fff; font-family:system-ui, Arial, sans-serif;
+  }
+
+  .stars{ position:fixed; inset:0; background:
+    radial-gradient(1px 1px at 8% 18%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 22% 72%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 36%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 76% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 90% 58%, #fff 50%, transparent 51%);
+    animation: twinkle 3.5s infinite alternate; opacity:.9; z-index:-1;
+  }
+  @keyframes twinkle{ from{opacity:.6} to{opacity:1} }
+
+  .ui{ position:relative; z-index:2; text-align:center; transition: opacity .4s ease; }
+  .ui.hide{ opacity:0; pointer-events:none; }
+
+  button{
+    padding:14px 36px; border-radius:999px; border:0; cursor:pointer;
+    font-weight:800; letter-spacing:.5px;
+    background: linear-gradient(135deg,#ff4d4d,#ff9900);
+    box-shadow: 0 10px 30px rgba(255,120,0,.35);
+  }
+
+  .stage{ position:absolute; inset:0; pointer-events:none; }
+
+  /* Rocket */
+  .rocket{
+    position:absolute;
+    left:50%; bottom:-220px; transform:translateX(-50%);
+    width:44px; height:150px;
+    filter: drop-shadow(var(--glow));
+    transition: bottom 5s cubic-bezier(.18,.8,.2,1);
+  }
+  .launch{ bottom:110%; }
+
+  .body{
+    position:relative; width:100%; height:100%;
+    background: linear-gradient(180deg, #f5f7fb 0%, #cfd6e2 40%, #aeb6c6 60%, #e9edf4 100%);
+    border-radius: 22px 22px 8px 8px;
+    overflow:hidden;
+  }
+  .nose{
+    position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+    width:28px; height:30px;
+    background: linear-gradient(180deg,#ffffff,#cfd6e2);
+    border-radius: 14px 14px 6px 6px;
+  }
+
+  .xmark::before, .xmark::after{
+    content:""; position:absolute; left:50%; top:50%;
+    width:140%; height:5px; background:#0b0f1a; opacity:.9;
+    transform-origin:center;
+  }
+  .xmark::before{ transform: translate(-50%,-50%) rotate(45deg); }
+  .xmark::after { transform: translate(-50%,-50%) rotate(-45deg); }
+
+  .ring{ position:absolute; left:0; right:0; height:2px; background: rgba(0,0,0,.25); }
+  .r1{ top:44px } .r2{ top:78px } .r3{ top:110px }
+
+  /* Engines */
+  .engine{
+    position:absolute; left:50%; bottom:-18px; transform:translateX(-50%);
+    width:14px; height:18px; background:#1b1f2a; border-radius:0 0 8px 8px;
+  }
+
+  /* Fire flame */
+  .flame{
+    position:absolute; left:50%; bottom:-50px; transform:translateX(-50%);
+    width:22px; height:60px; border-radius: 50% 50% 70% 70%;
+    background: radial-gradient(circle at 50% 15%, #fff6a0 0 18%, #ffb000 42%, #ff3b3b 70%, rgba(255,59,59,0) 78%);
+    filter: blur(1px);
+    animation: flame 120ms infinite alternate;
+  }
+  @keyframes flame{ from{ transform:translateX(-50%) scaleY(.85) } to{ transform:translateX(-50%) scaleY(1.2) } }
+
+  /* Smoke */
+  .smoke{
+    position:absolute; left:50%; bottom:-80px; transform:translateX(-50%);
+    width:140px; height:60px; filter: blur(10px); opacity:.5;
+    background:
+      radial-gradient(26px 14px at 20% 50%, #cfd6e4 40%, transparent 60%),
+      radial-gradient(30px 18px at 50% 50%, #e3e8f1 40%, transparent 60%),
+      radial-gradient(22px 12px at 80% 50%, #b7c0d2 40%, transparent 60%);
+    animation: smoke 1.5s infinite ease-out;
+  }
+  @keyframes smoke{
+    0%{ transform:translateX(-50%) translateY(0) scale(.9); opacity:.5 }
+    50%{ transform:translateX(-50%) translateY(20px) scale(1.05); opacity:.3 }
+    100%{ transform:translateX(-50%) translateY(40px) scale(1.1); opacity:.1 }
+  }
+
+  /* ignition burst */
+  .burst{
+    position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+    width:110px; height:110px; border-radius:50%;
+    background: radial-gradient(circle, rgba(220,235,255,.9), rgba(140,180,255,.6), rgba(80,120,255,.2), transparent 60%);
+    filter: blur(8px); opacity:0;
+  }
+  .burst.show{ animation: burst 700ms ease-out 1; }
+  @keyframes burst{
+    from{ transform:translateX(-50%) scale(.5); opacity:1 }
+    to{ transform:translateX(-50%) scale(1.25); opacity:0 }
+  }
+</style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <div id="ui" class="ui">
+    <h1>Speso Starship Launch 🚀</h1>
+    <button onclick="launch()">Launch</button>
+  </div>
+
+  <div class="stage">
+    <div id="rocket" class="rocket">
+      <div class="nose"></div>
+      <div class="body">
+        <div class="xmark"></div>
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="engine"></div>
+        <div class="flame"></div>
+        <div class="smoke"></div>
+      </div>
+    </div>
+    <div id="burst" class="burst"></div>
+  </div>
+
+<script>
+  function launch(){
+    document.getElementById('rocket').classList.add('launch');
+    document.getElementById('ui').classList.add('hide');   // hide UI
+    document.getElementById('burst').classList.add('show');
+
+    // Show UI again after 5s
+    setTimeout(()=>{
+      document.getElementById('ui').classList.remove('hide');
+    },5000);
+  }
+</script>
+</body>
+</html>
